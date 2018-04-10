@@ -178,7 +178,8 @@ Given encoded message "12", it could be decoded as "AB" (1 2) or "L" (12).
 
 The number of ways decoding "12" is 2.
 
-**Thoughts: Conditional dp problem, have to check whether number and combined with previous number within range when iterate through **
+**Thoughts: Conditional dp problem, have to check whether number and combined with previous number within range when iterate through**
+
 **There are hidden dp transition formulas for each different conditions**
 > Remember to return 0 when no condition is satisfied
 
@@ -215,6 +216,7 @@ For example, given the array [2,3,-2,4],
 the contiguous subarray [2,3] has the largest product = 6.
 
 **Thoughts: keep track of minimum, maximum through each iteration**
+
 > Note:  Update current max and current min before compare with global max
 
 ```
@@ -271,7 +273,7 @@ For example, given n = 2, return [0,1,3,2]. Its gray code sequence is:
 11 - 3
 10 - 2
 
-**Thoughts: Backtrack, every iteration, adding from back to front. **
+**Thoughts: Backtrack, every iteration, adding from back to front.**
 
 ```
 class Solution(object):
