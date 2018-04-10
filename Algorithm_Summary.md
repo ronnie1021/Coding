@@ -34,6 +34,7 @@ class Solution(object):
 # DP and backtracking
 
 3. Longest Substring without repeating characters
+
 Given a string, find the length of the longest substring without repeating characters.
 
 Examples:
@@ -64,6 +65,7 @@ class Solution(object):
         return len(r)
 ```
 5. Longest Palindromic Substring
+
 Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
 
 **Thoughts: iterate through all characters, treat them as mid point and search left and right**
