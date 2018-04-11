@@ -15,7 +15,7 @@ Space complexity should be O(n).
 
 Can you do it like a boss? Do it without using any builtin function like __builtin_popcount in c++ or in any other language.
 
-**Thoughts: Tricks, nums of 1 in i is nums of 1 in i&i-1 + 1  
+**Thoughts: Tricks, nums of 1 in i is nums of 1 in i&i-1 + 1**
 
 ```
 class Solution(object):
@@ -71,7 +71,7 @@ Given 1->2->3->4->5->NULL,
 
 return 1->3->5->2->4->NULL.
 
-**Thoughts: check if head.next is null, and just iterate throgh 
+**Thoughts: check if head.next is null, and just iterate throgh**
 
 ```
 class Solution(object):
@@ -162,7 +162,7 @@ Given a string, your task is to count how many palindromic substrings in this st
 
 The substrings with different start indexes or end indexes are counted as different substrings even they consist of same characters.
 
-**Thoughts: Same as longest palindromic substring
+**Thoughts: Same as longest palindromic substring**
 
 ```
 class Solution(object):
@@ -302,6 +302,7 @@ The number of ways decoding "12" is 2.
 **Thoughts: Conditional dp problem, have to check whether number and combined with previous number within range when iterate through**
 
 **There are hidden dp transition formulas for each different conditions**
+
 > Remember to return 0 when no condition is satisfied
 
 ```
@@ -373,7 +374,26 @@ Example:
 - transactions = [buy, sell, cooldown, buy, sell]
 
 **Thoughts. there are three states: buy, sell, cool at each time. if you want to buy at a particular time i, you could either cool or buy at i - 1 and if you want to sell at time i, at time i-1 the only thing you can do is buy, you want to cool at time i, you can either
-cool or sell at time i - 1
+cool or sell at time i - 1**
+
+```
+class Solution(object):
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+        buy = float('-inf')
+        sell = cool = 0
+        for i in prices:
+            presell = sell
+            buy = max(buy, cool - i)
+            sell = buy + prices
+            cool = max(presell, cool)
+        return max(sell, cool)
+```
+
+
 # Backtracking
 17.Letter Combinations of a Phone Number
 
@@ -440,7 +460,7 @@ Write a function that takes an integer n and return all possible combinations of
 You may assume that n is always positive. </br>
 Factors should be greater than 1 and less than n.
 
-**Thoughts: find each num, it has to go through ever combination with different factors, and recursively for its num/div  
+**Thoughts: find each num, it has to go through ever combination with different factors, and recursively for its num/div**
 
 ```
 class Solution(object):
