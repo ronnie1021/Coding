@@ -238,8 +238,38 @@ class Solution(object):
             return root
         return left or right
 ```
+337.House Robber III
 
+The thief has found himself a new place for his thievery again. There is only one entrance to this area, called the "root." Besides the 
 
+root, each house has one and only one parent house. After a tour, the smart thief realized that "all houses in this place forms a binary 
+
+tree". It will automatically contact the police if two directly-linked houses were broken into on the same night.
+
+Determine the maximum amount of money the thief can rob tonight without alerting the police.
+
+**Thoughts: each level return 2 values, rob or not rob. at each level calculate max for not rob and rob.**
+
+```
+class Solution(object):
+    def rob(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root:
+            return 0
+        
+        def dfs(root):
+            if not root:
+                return (0,0)
+            rb_left, notrb_left = dfs(root.left)
+            rb_right, notrb_right = dfs(root.right)
+            notrb, rb = max(rb_left+rb_right, notrb_left+notrb_right)\
+            , max(notrb_left + notrb_right + root.val,rb_left+rb_right)
+            return (rb, notrb)
+        return max(dfs(root))
+```
 
 
 ## BFS
