@@ -393,11 +393,69 @@ class Solution(object):
         return max(sell, cool)
 ```
 
+139.Word Break
+
+Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can be segmented into a space-
+
+separated sequence of one or more dictionary words. You may assume the dictionary does not contain duplicate words.
+
+For example, given
+
+s = "leetcode",
+
+dict = ["leet", "code"].
+
+Return true because "leetcode" can be segmented as "leet code".
+
+**Thoughts: outer loop is going from second, inner group is going from 0 check if prev is True or not, and check**
+
+```
+class Solution(object):
+    def wordBreak(self, s, wordDict):
+        """
+        :type s: str
+        :type wordDict: List[str]
+        :rtype: bool
+        """
+        if not wordDict:
+            return False
+        if s in wordDict:
+            return True
+        res = [False] * (len(s) + 1)
+        res[0] = True
+        for c in range(1, len(s) + 1):
+            for i in xrange(c):
+                if res[i] and s[i:c] in wordDict:
+                    res[c] = True
+                    break
+        return res[-1]
+```
+198.House Robber
+
+You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed, the only constraint stopping you from robbing each of them is that adjacent houses have security system connected and it will automatically contact the police if two adjacent houses were broken into on the same night.
+
+Given a list of non-negative integers representing the amount of money of each house, determine the maximum amount of money you can rob tonight without alerting the police.
 
 # Backtracking
 17.Letter Combinations of a Phone Number
 
 Given a digit string, return all possible letter combinations that the number could represent.
+
+**Thoughts: there can only be rob or not rob, so if you rob at this time, you can only notrob previously and if you notrob, 
+you can either rob or not rob**
+
+```
+class Solution(object):
+    def rob(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        rob = notrob = 0
+        for n in nums:
+            notrob, rob = max(rob, notrob), max(notrob + n, rob)
+        return max(rob, notrob)
+```
 
 
 A mapping of digit to letters (just like on the telephone buttons) is given below.
