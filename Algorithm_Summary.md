@@ -538,6 +538,59 @@ class Solution(object):
         return ans
 ```
 
+34 Andriod unlock pattern
+Given an Android 3x3 key lock screen and two integers m and n, where 1 ≤ m ≤ n ≤ 9, count the total number of unlock patterns 
+
+of the Android lock screen, which consist of minimum of m keys and maximum n keys.
+
+Rules for a valid pattern:
+
+Each pattern must connect at least m keys and at most n keys.
+
+All the keys must be distinct.
+
+If the line connecting two consecutive keys in the pattern passes through any other keys, the other keys must have previously 
+
+selected in the pattern. No jumps through non selected key is allowed.
+
+The order of keys used matters.
+
+**Thoughts: Find value that needs to be skipped, for all pairs of two numbers. Use dfs to search for, when two values in skip, check if skipped value is visited or not. if not, ok. find all combination of numbers that at least m, and at most n**
+
+
+```
+class Solution(object):
+    def numberOfPatterns(self, m, n):
+        """
+        :type m: int
+        :type n: int
+        :rtype: int
+        """
+        skip = {}
+        skip[(1, 3)] = 2
+        skip[(1, 7)] = 4
+        skip[(3, 9)] = 6
+        skip[(2, 8)] = 5
+        skip[(3, 7)] = 5
+        skip[(1, 9)] = 5
+        skip[(4, 6)] = 5
+        skip[(7, 9)] = 8
+        self.count = 0
+        def dfs(used, last):
+            if len(used) > n:
+                return
+            if len(used) >= m:
+                self.count += 1
+            for i in range(1, 10):
+                if i not in used:
+                    pairs = (min(i, last), max(i, last))
+                    if pairs not in skip or skip[pairs] in used:
+                        dfs(used + [i], i)
+        for i in range(1, 10):
+            dfs([i], i)
+        return self.count
+```
+
 # Two pointers
 
 11.Container With Most Water
