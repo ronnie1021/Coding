@@ -232,4 +232,221 @@ class Solution(object):
             res.insert(i[1], i)
         return res
 ```
+247.Strobogrammatic Number II
 
+A strobogrammatic number is a number that looks the same when rotated 180 degrees (looked at upside down).
+
+Find all strobogrammatic numbers that are of length = n.
+
+Example:
+
+Input:  n = 2
+
+Output: ["11","69","88","96"]
+
+T
+**Thoughts: check if n is odd or even, start with mid and then append nums for each iteration.**
+
+```
+class Solution(object):
+    def findStrobogrammatic(self, n):
+        """
+        :type n: int
+        :rtype: List[str]
+        """
+        numbers = ['0', '1', '8'] if n % 2 else ['']
+        for _ in range(n//2):
+            numbers = [head + s + tail for head, tail in [('0','0'),('1','1'),('6','9'),('8','8'),('9','6')] for s in numbers]
+        return [s for s in numbers if s and (s[0]!='0' or len(s)==1)]
+                
+```
+
+286.Walls and Gates
+
+You are given a m x n 2D grid initialized with these three possible values.
+
+-1 - A wall or an obstacle.
+0 - A gate.
+INF - Infinity means an empty room. We use the value 231 - 1 = 2147483647 to represent INF as you may assume that the distance to a gate is less than 2147483647.
+Fill each empty room with the distance to its nearest gate. If it is impossible to reach a gate, it should be filled with INF.
+
+Example: 
+
+Given the 2D grid:
+
+INF  -1  0  INF
+INF INF INF  -1
+INF  -1 INF  -1
+  0  -1 INF INF
+After running your function, the 2D grid should be:
+
+  3  -1   0   1
+  2   2   1  -1
+  1  -1   2  -1
+  0  -1   3   4
+
+**Thoughts: start from gate, if rooms[i][j] < dis, then return, else rooms[i][j] = dis**
+
+```
+class Solution(object):
+    def wallsAndGates(self, rooms):
+        """
+        :type rooms: List[List[int]]
+        :rtype: void Do not return anything, modify rooms in-place instead.
+        """
+        if not rooms or not rooms[0]:
+            return 
+        m, n = len(rooms), len(rooms[0])
+        for i in xrange(m):
+            for j in xrange(n):
+                if rooms[i][j] == 0:
+                    self.dfs(i, j, rooms, 0)
+    def dfs(self, i, j, rooms, dis):
+            if i < 0 or j < 0 or i == len(rooms) or j == len(rooms[0]) or rooms[i][j] < dis: return
+            rooms[i][j] = dis
+            self.dfs(i + 1, j, rooms, dis + 1)
+            self.dfs(i - 1, j, rooms, dis + 1)
+            self.dfs(i, j + 1, rooms, dis + 1)
+            self.dfs(i, j - 1, rooms, dis + 1)
+            
+```
+
+490.The Maze
+
+There is a ball in a maze with empty spaces and walls. The ball can go through empty spaces by rolling up, down, left or 
+
+right, but it won't stop rolling until hitting a wall. When the ball stops, it could choose the next direction.
+
+Given the ball's start position, the destination and the maze, determine whether the ball could stop at the destination.
+
+The maze is represented by a binary 2D array. 1 means the wall and 0 means the empty space. You may assume that the borders of 
+
+the maze are all walls. The start and destination coordinates are represented by row and column indexes.
+
+**Thoughts: going for one direction until it hits a wall, then change direction**
+
+```
+class Solution(object):
+    def hasPath(self, maze, start, destination):
+        """
+        :type maze: List[List[int]]
+        :type start: List[int]
+        :type destination: List[int]
+        :rtype: bool
+        """
+        pairs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        self.memo = {}    
+        def dfs(maze, pairs, i, j, destination, visited):
+            if [i, j] in visited: return False
+            if (i, j) in self.memo: return self.memo[(i, j)]
+            if [i, j] == destination:return True
+            for p in pairs:
+                nexti = i + p[0]
+                nextj = j + p[1]
+                while nexti < len(maze) and nexti >= 0 and nextj < len(maze[0]) and nextj >= 0 and maze[nexti][nextj] == 0:
+                    nexti += p[0]
+                    nextj += p[1]
+                nexti -= p[0]
+                nextj -= p[1]
+                if dfs(maze, pairs, nexti, nextj, destination, visited + [[i, j]]):
+                        self.memo[(i, j)] = True
+                        return True
+            self.memo[(i, j)] = False
+            return False
+        return dfs(maze, pairs,start[0], start[1], destination, [])
+        
+```
+
+418.Sentence Screen Fitting
+
+Given a rows x cols screen and a sentence represented by a list of non-empty words, find how many times the given sentence can be fitted on the screen.
+
+Input:
+rows = 2, cols = 8, sentence = ["hello", "world"]
+
+Output: 
+1
+
+Explanation:
+hello---
+world---
+
+The character '-' signifies an empty space on the screen.
+
+**Thoughts: construct sentence first, then fit matrix to sentence see how many cell needed, find position of space. Note: index is one less than len, so when encounter space, we need to plus one. words length is less than the column length.**
+
+```
+class Solution(object):
+    def wordsTyping(self, sentence, rows, cols):
+        """
+        :type sentence: List[str]
+        :type rows: int
+        :type cols: int
+        :rtype: int
+        """
+        s = ' '.join(sentence)+' '
+        start, l = 0,len(s)
+        for i in xrange(rows):
+            start+=cols
+            if s[start % l] == ' ':
+                start += 1
+            else:
+                while start >= 0 and s[(start-1)%l] != ' ':
+                    start -= 1         
+        return start/l
+```
+
+
+417.Pacific Atlantic Water Flow
+
+Given an m x n matrix of non-negative integers representing the height of each unit cell in a continent, the "Pacific ocean" 
+
+touches the left and top edges of the matrix and the "Atlantic ocean" touches the right and bottom edges.
+
+Water can only flow in four directions (up, down, left, or right) from a cell to another one with height equal or lower.
+
+Find the list of grid coordinates where water can flow to both the Pacific and Atlantic ocean.
+
+
+Example:
+
+Given the following 5x5 matrix:
+
+  Pacific ~   ~   ~   ~   ~ 
+       ~  1   2   2   3  (5) *
+       ~  3   2   3  (4) (4) *
+       ~  2   4  (5)  3   1  *
+       ~ (6) (7)  1   4   5  *
+       ~ (5)  1   1   2   4  *
+          *   *   *   *   * Atlantic
+
+Return:
+
+[[0, 4], [1, 3], [1, 4], [2, 2], [3, 0], [3, 1], [4, 0]] (positions with parentheses in above matrix).
+
+**Thoughts: going from top-left and bottom right. divide problem into two separate. find points for atl and pac separate. make sure point is not in the set and 
+find intersection**
+
+```
+class Solution(object):
+    def pacificAtlantic(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: List[List[int]]
+        """
+        if not matrix or not matrix[0]:
+            return []
+        atl, pac, m, n = set(), set(), len(matrix), len(matrix[0])
+        def find(i, j, ocean, matrix):
+            ocean.add((i, j))
+            if i - 1 >= 0 and (i-1, j) not in ocean and matrix[i-1][j] >= matrix[i][j]: find(i-1, j, ocean, matrix)
+            if i + 1 < len(matrix) and (i+1, j) not in ocean and matrix[i+1][j] >= matrix[i][j]: find(i+1, j, ocean, matrix)
+            if j - 1 >= 0 and (i, j-1) not in ocean and matrix[i][j-1] >= matrix[i][j]: find(i, j-1, ocean, matrix)
+            if j + 1 < len(matrix[0]) and (i, j+1) not in ocean and matrix[i][j+1] >= matrix[i][j]: find(i, j+1, ocean, matrix)
+        for x in xrange(max(m, n)):
+            if x < n and (0, x) not in pac: find(0, x, pac, matrix)
+            if x < m and (x, 0) not in pac: find(x, 0, pac, matrix)
+            if x < m and (x, n-1) not in atl: find(x, n-1, atl, matrix)
+            if x < n and (m-1, x) not in atl: find(m-1, x, atl, matrix)
+        return [[x, y] for x, y in atl&pac]
+```
