@@ -450,3 +450,157 @@ class Solution(object):
             if x < n and (m-1, x) not in atl: find(m-1, x, atl, matrix)
         return [[x, y] for x, y in atl&pac]
 ```
+
+325.Maximum Size Subarray Sum Equals k
+
+Given an array nums and a target value k, find the maximum length of a subarray that sums to k. If there isn't one, return 0 instead.
+
+Note:
+
+The sum of the entire nums array is guaranteed to fit within the 32-bit signed integer range.
+
+Example 1:
+
+Given nums = [1, -1, 5, -2, 3], k = 3,
+
+return 4. (because the subarray [1, -1, 5, -2] sums to 3 and is the longest)
+
+**Thoughts: make sure 0 is at the start points [-1, 1] k=0 . i - (sums - k) is the length of the array**
+
+```
+class Solution(object):
+    def maxSubArrayLen(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: int
+        """
+        sums = 0
+        maxl = 0
+        maps = {0:-1}
+        for i in xrange(len(nums)):
+            sums += nums[i]
+            if sums not in maps:
+                maps[sums] = i
+            if sums - k in maps:
+                maxl = max(maxl, i - maps[sums-k])
+        return maxl
+```
+
+314.Binary Tree Vertical Order Traversal
+
+Given a binary tree, return the vertical order traversal of its nodes' values. (ie, from top to bottom, column by column).
+
+If two nodes are in the same row and column, the order should be from left to right.
+
+Given binary tree [3,9,20,null,null,15,7],
+   3
+  /\
+ /  \
+ 9  20
+    /\
+   /  \
+  15   7
+return its vertical order traversal as:
+[
+  [9],
+  [3,15],
+  [20],
+  [7]
+]
+
+**Thoughts: BFS, left node -1 and right node +1 to keep track of levels and also keep track of min and max levels**
+
+> Note: min and max are None in the end, so we need to +/- 1
+
+```
+class Solution(object):
+    def verticalOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        min_col = max_col = 0
+        deque = collections.deque([(root, 0)])
+        dicts = collections.defaultdict(list)
+        res = []
+        while deque:
+            cur, col = deque.popleft()
+            min_col = min(col, min_col)
+            max_col = max(col, max_col)
+            if cur:
+                dicts[col].append(cur.val)
+                deque.append((cur.left, col+1))
+                deque.append((cur.right, col-1))
+        # min_col and max_col are None, so we need to +/- 1
+        for i in reversed(range(min_col+1, max_col)):
+            res.append(dicts[i])
+        return res
+```
+
+545. Boundary of Binary Tree
+
+Given a binary tree, return the values of its boundary in anti-clockwise direction starting from root. Boundary includes left boundary, leaves, and right boundary in order without duplicate nodes.
+
+Left boundary is defined as the path from root to the left-most node. Right boundary is defined as the path from root to the right-most node. If the root doesn't have left subtree or right subtree, then the root itself is left boundary or right boundary. Note this definition only applies to the input binary tree, and not applies to any subtrees.
+
+The left-most node is defined as a leaf node you could reach when you always firstly travel to the left subtree if exists. If not, travel to the right subtree. Repeat until you reach a leaf node.
+
+The right-most node is also defined by the same way with left and right exchanged.
+
+Example 1
+Input:
+  1
+   \
+    2
+   / \
+  3   4
+
+Ouput:
+[1, 3, 4, 2]
+
+Explanation:
+The root doesn't have left subtree, so the root itself is left boundary.
+The leaves are node 3 and 4.
+The right boundary are node 1,2,4. Note the anti-clockwise direction means you should output reversed right boundary.
+So order them in anti-clockwise without duplicates and we have [1,3,4,2].
+
+**Thoughts: from left boundary + leaves + right boundary. pass root.left and root.right to left b and right b respectively**
+
+```
+class Solution(object):
+    def boundaryOfBinaryTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        if not root: return []
+        res = []
+        res.append(root.val)
+        self.left_side(root.left, res)
+        self.leaf(root.left, res)
+        self.leaf(root.right, res)
+        self.right_side(root.right, res)
+        return res
+        
+    def left_side(self, root, res):
+        if not root or (not root.left and not root.right): return
+        res.append(root.val)
+        if root.left: self.left_side(root.left, res)
+        else: self.left_side(root.right, res)
+        
+    
+    def right_side(self, root, res):
+        if not root or (not root.left and not root.right): return
+        if root.right: self.right_side(root.right, res)
+        else: self.right_side(root.left, res)
+        res.append(root.val)
+    
+    def leaf(self, root, res):
+        if not root: return
+        if not root.left and not root.right: 
+            res.append(root.val)
+            return
+        self.leaf(root.left, res)
+        self.leaf(root.right, res)
+```
