@@ -604,3 +604,63 @@ class Solution(object):
         self.leaf(root.left, res)
         self.leaf(root.right, res)
 ```
+
+763.Partition Labels
+
+A string S of lowercase letters is given. We want to partition this string into as many parts as possible so that each letter appears in at most one part, and return a list of integers representing the size of these parts.
+
+Example 1:
+Input: S = "ababcbacadefegdehijhklij"
+Output: [9,7,8]
+Explanation:
+The partition is "ababcbaca", "defegde", "hijhklij".
+This is a partition so that each letter appears in at most one part.
+A partition like "ababcbacadefegde", "hijhklij" is incorrect, because it splits S into less parts.
+
+**Thoughts: create a index, and check intersection between two parts divided by index**
+
+```
+class Solution(object):
+    def partitionLabels(self, S):
+        """
+        :type S: str
+        :rtype: List[int]
+        """
+        res = []
+        while S:
+            i = 1
+            while set(S[:i]) & set(S[i:]):
+                i += 1
+            res.append(i)
+            S = S[i:]
+        return res
+```
+
+671.Second Minimum Node In a Binary Tree
+
+Given a non-empty special binary tree consisting of nodes with the non-negative value, where each node in this tree has exactly two or zero sub-node. If the node has two sub-nodes, then this node's value is the smaller value among its two sub-nodes.
+
+Given such a binary tree, you need to output the second minimum value in the set made of all the nodes' value in the whole tree.
+
+If no such second minimum value exists, output -1 instead.
+
+**Thoughts: traverse tree only with node smaller than the current second smallest value**
+
+```
+class Solution(object):
+    def findSecondMinimumValue(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        res = [float('inf')]
+        def traverse(node):
+            if not node:
+                return
+            if root.val < node.val < res[0]:
+                res[0] = node.val
+            if node.left and node.left.val < res[0]: traverse(node.left)        
+            if node.right and node.right.val < res[0]: traverse(node.right)
+        traverse(root)
+        return -1 if res[0] == float('inf') else res[0]
+```
