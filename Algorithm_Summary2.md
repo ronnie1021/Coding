@@ -379,3 +379,51 @@ class Solution(object):
                 count+=1
         return 0
 ```
+
+4.Median of Two Sorted Arrays
+
+There are two sorted arrays nums1 and nums2 of size m and n respectively.
+
+Find the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).
+
+**Thoughts: Use binary search to find cut in nums1 and plus cut in nums2 (deduce cut for nums2 by half size), so that number left to cut are less than right of the cut. l1 <= r2, l2 <= r1. **
+```
+class Solution(object):
+    def findMedianSortedArrays(self, nums1, nums2):
+        """
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: float
+        """
+        n1 = len(nums1)
+        n2 = len(nums2)
+        if n2 < n1: return self.findMedianSortedArrays(nums2, nums1)
+        mid = (n1 + n2) / 2
+        cut1 = 0
+        cut2 = 0
+        cutr = len(nums1)
+        cutl = 0
+        while cutl <= n1:
+            cut1 = (cutl + cutr) / 2
+            cut2 = mid - cut1
+            # print('cut1: ' + str(cut1))
+            # print('cut2: ' + str(cut2))
+            if cut1 == 0: l1 = float('-inf')  
+            else: l1 = nums1[cut1-1]
+            if cut1 == n1: r1 = float('inf') 
+            else: r1 = nums1[cut1]
+            if cut2 == 0: l2 = float('-inf')  
+            else: l2 = nums2[cut2-1]
+            if cut2 == n2: r2 = float('inf') 
+            else: r2 = nums2[cut2]
+            if l1 > r2:
+                cutr = cut1 - 1
+            elif l2 > r1:
+                cutl = cut1 + 1
+            else:
+                if (n1+n2) % 2 == 0:
+                    return (max(l1, l2) + min(r1, r2))/2.0
+                else:
+                    return min(r1, r2)
+        return -1
+```
