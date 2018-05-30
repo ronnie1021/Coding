@@ -427,3 +427,46 @@ class Solution(object):
                     return min(r1, r2)
         return -1
 ```
+
+
+361.Bomb Enemy
+
+Given a 2D grid, each cell is either a wall 'W', an enemy 'E' or empty '0' (the number zero), return the maximum enemies you can kill using one bomb.
+The bomb kills all the enemies in the same row and column from the planted point until it hits the wall since the wall is too strong to be destroyed.
+Note that you can only put the bomb at an empty cell.
+
+**Thoughts:count bomb for each postion with previous being 0 or 'W'. iterate through rowwise**
+
+```
+class Solution(object):
+    def maxKilledEnemies(self, grid):
+        """
+        :type grid: List[List[str]]
+        :rtype: int
+        """
+        if not grid or not grid[0]:
+            return 0
+        maxv = 0
+        rowcount = 0
+        m, n = len(grid), len(grid[0])
+        colcount = [0]*n
+        for i in xrange(m):
+            for j in xrange(n):
+                if (j == 0 or grid[i][j-1] == 'W'):
+                    rowcount = 0
+                    index = j
+                    while index < n and grid[i][index] != 'W':
+                        if grid[i][index] == 'E':
+                            rowcount += 1
+                        index += 1
+                if (i == 0 or grid[i - 1][j] == 'W'):
+                    colcount[j] = 0
+                    index = i
+                    while index < m and grid[index][j] != 'W':
+                        if grid[index][j] == 'E':
+                            colcount[j] += 1
+                        index += 1
+                if grid[i][j] == '0':
+                    maxv = max(maxv, rowcount + colcount[j])
+        return maxv
+```
