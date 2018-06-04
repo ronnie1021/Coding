@@ -281,3 +281,78 @@ class Solution(object):
                 end += 1
         return count
 ```
+
+# Divide and conquer
+
+241.Different Ways to Add Parentheses
+
+Given a string of numbers and operators, return all possible results from computing all the different possible ways to group 
+
+numbers and operators. The valid operators are +, - and *.
+
+Input: "2-1-1"
+Output: [0, 2]
+Explanation: 
+((2-1)-1) = 0 
+(2-(1-1)) = 2
+
+
+**Thoughts: Divide it based on operators, until only one integer on each side, run through all combinations of results**
+
+
+```
+class Solution(object):
+    def diffWaysToCompute(self, input):
+        """
+        :type input: str
+        :rtype: List[int]
+        """
+        if input.isdigit():
+            return [int(input)]
+        res = []        
+        for i in xrange(len(input)):
+            if input[i] in "-+*":
+                res1 = self.diffWaysToCompute(input[:i])
+                res2 = self.diffWaysToCompute(input[i+1:])
+                res += [eval(str(k)+input[i]+str(j)) for k in res1 for j in res2]            
+        return res
+```
+
+18.4Sum
+
+Given an array nums of n integers and an integer target, are there elements a, b, c, and d in nums such that a + b + c + d = target? Find all unique quadruplets in the array which gives the sum of target.
+
+
+**Thoughts: Sort list and divide problem into two sum, check if num is equal previous one, if so continue to avoid duplicates **
+
+```
+class Solution(object):
+    def fourSum(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: List[List[int]]
+        """  
+        self.r = []
+        def findNsum(nums, N, target, res):
+            if len(nums) < N or N < 2 or nums[0]*N > target or nums[-1]*N < target: return 
+            if N == 2: 
+                l,r = 0,len(nums)-1
+                while l < r:
+                    s = nums[l] + nums[r]
+                    if s == target:
+                        self.r.append(res + [nums[l], nums[r]])
+                        l += 1
+                        while l < r and nums[l] == nums[l-1]:
+                            l += 1
+                    elif s < target:
+                        l += 1
+                    else:
+                        r -= 1
+            else:
+                for i in range(len(nums)-N+1):
+                    if i == 0 or (nums[i] != nums[i-1]):
+                        findNsum(nums[i+1:], N-1, target-nums[i], res+[nums[i]])
+        findNsum(sorted(nums), 4, target, [])
+        return self.r
+```
