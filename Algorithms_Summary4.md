@@ -356,3 +356,136 @@ class Solution(object):
         findNsum(sorted(nums), 4, target, [])
         return self.r
 ```
+
+390.Elimination Game
+
+There is a list of sorted integers from 1 to n. Starting from left to right, remove the first number and every other number afterward until you reach the end of the list.
+
+Repeat the previous step again, but this time from right to left, remove the right most number and every other number from the remaining numbers.
+
+We keep repeating the steps again, alternating left to right and right to left, until a single number remains.
+
+Find the last number that remains starting with a list of length n.
+
+**Thoughts: keep record of head, if going from left then head + step, if going from right and remain is odd. then update
+head + step. for each round step will be two times bigger**
+
+```
+class Solution(object):
+    def lastRemaining(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        step = 1
+        head = 1
+        remain = n
+        left = True
+        while remain > 1:
+            if left or remain%2:
+                head += step
+            step *= 2
+            remain = remain/2
+            left = not left
+        return head
+```
+260.Single Number III
+
+Given an array of numbers nums, in which exactly two elements appear only once and all the other elements appear exactly 
+
+twice. Find the two elements that appear only once.
+
+```
+class Solution(object):
+    def singleNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        # Isolates bits of A and B that are different:
+        mask = 0
+        for x in nums:
+            mask ^= x  # repeated numebers neutralize each other
+        print mask, - mask
+        # We need only one of this bits, for example the last:
+        pivot_bit = mask & -mask
+
+        # Having a and b a different value of pivot_bit we can
+        # repeat the game on 2 virtual partitions:
+        a, b = 0, 0
+        for x in nums:
+            if x & pivot_bit:
+                a ^= x  # repeated numebers neutralize each other
+            else:
+                b ^= x  # repeated numebers neutralize each other
+        return [a, b]
+```
+
+Majority Element II
+
+Given an integer array of size n, find all elements that appear more than ⌊ n/3 ⌋ times.
+
+Note: The algorithm should run in linear time and in O(1) space.
+
+```
+class Solution(object):
+    def majorityElement(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        if not nums:
+            return []
+        # There are at most two possible outputs, We create two candidates
+        count1, count2, candidate1, candidate2 = 0, 0, 0, 1
+        for n in nums:
+            if n == candidate1:
+                count1 += 1
+            elif n == candidate2:
+                count2 += 1
+            elif count1 == 0:
+                candidate1, count1 = n, 1
+            elif count2 == 0:
+                candidate2, count2 = n, 1
+            else:
+                count1, count2 = count1 - 1, count2 - 1
+        return [n for n in (candidate1, candidate2)
+                        if nums.count(n) > len(nums) // 3]
+```
+
+
+306.Additive Number
+
+Additive number is a string whose digits can form additive sequence.
+
+A valid additive sequence should contain at least three numbers. Except for the first two numbers, each subsequent number in the sequence must be the sum of the preceding two.
+
+Given a string containing only digits '0'-'9', write a function to determine if it's an additive number.
+
+Note: Numbers in the additive sequence cannot have leading zeros, so sequence 1, 2, 03 or 1, 02, 3 is invalid.
+
+```
+class Solution(object):
+    def isAdditiveNumber(self, num):
+        """
+        :type num: str
+        :rtype: bool
+        """
+        if not num:
+            return False
+        for i in range(1, len(num)):
+            if num[0] == '0' and i > 1:
+                return False
+            for j in range(i+1, len(num)):
+                first, second, third = 0, i, j
+                if num[i] == '0' and third > second + 1: break
+                while third < len(num):   
+                    sums = str(int(num[first:second]) + int(num[second:third]))
+                    if num[third:].startswith(sums):
+                        first, second, third = second, third, third + len(sums)
+                    else:
+                        break
+                if third == len(num):
+                    return True
+        return False
+```
