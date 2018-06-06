@@ -489,3 +489,170 @@ class Solution(object):
                     return True
         return False
 ```
+
+137.Single Number II
+
+Given a non-empty array of integers, every element appears three times except for one, which appears exactly once. Find that single one.
+
+Note:
+
+Your algorithm should have a linear runtime complexity. Could you implement it without using extra memory?
+
+**one holds number that happens only once, if number happens twice, two holds, if number happens third time, it becomes zero**
+
+```
+class Solution(object):
+    def singleNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        one, two = 0, 0
+        for n in nums:
+            one = (one ^ n) & ~two
+            two = (two ^ n) & ~one
+        return one
+```
+
+142. Linked List Cycle II
+
+Given a linked list, return the node where the cycle begins. If there is no cycle, return null.
+
+Note: Do not modify the linked list.
+
+**Thoughts: 2*(a + b) = a + b + c + b, so a = c, assume b, c is a circle**
+
+```
+class Solution(object):
+    def detectCycle(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        if not head:
+            return None
+        slow = head
+        fast = head
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+            if fast == slow:
+                while head != fast:
+                    head = head.next
+                    fast = fast.next 
+                return head
+        return None```
+
+```
+
+683.K Empty Slots
+
+There is a garden with N slots. In each slot, there is a flower. The N flowers will bloom one by one in N days. In each day, there will be exactly one flower blooming and it will be in the status of blooming since then.
+
+Given an array flowers consists of number from 1 to N. Each number in the array represents the place where the flower will open in that day.
+
+For example, flowers[i] = x means that the unique flower that blooms at day i will be at position x, where i and x will be in the range from 1 to N.
+
+Also given an integer k, you need to output in which day there exists two flowers in the status of blooming, and also the number of flowers between them is k and these flowers are not blooming.
+
+**Thoughts: create a bucket of size k+1, make sure maximum distance between in the bucket is k-1. so finding two flower with k in the middle only has two options. lowest element at current bucket and highest element in the previous and hgihest at current and lowest at next**
+
+```
+class Solution(object):
+    def kEmptySlots(self, flowers, k):
+        """
+        :type flowers: List[int]
+        :type k: int
+        :rtype: int
+        """
+        if k > len(flowers) or not flowers: -1
+            
+        numBucket = len(flowers) + k / (k+1)
+        high = [float('-inf')] * numBucket
+        low = [float('inf')] * numBucket
+        for i, f in enumerate(flowers):
+            p = f / (k + 1) 
+            if f < low[p]:
+                low[p] = f
+                if p > 0 and f - high[p-1] == k+1 : return i+1          
+            if f > high[p]:
+                high[p] = f
+                if p < len(high)-1 and low[p+1] - f == k+1: return i+1
+                
+        return -1
+```
+
+29.Divide Two Integers
+
+Given two integers dividend and divisor, divide two integers without using multiplication, division and mod operator.
+
+Return the quotient after dividing dividend by divisor.
+
+The integer division should truncate toward zero.
+
+**Thought:constantly times two on divisor, and also multiple times two. until divisor times 2 greater than divident. **
+
+```
+class Solution(object):
+    def divide(self, dividend, divisor):
+        """
+        :type dividend: int
+        :type divisor: int
+        :rtype: int
+        """
+        positive = (dividend < 0) is (divisor < 0)
+        dividend, divisor = abs(dividend), abs(divisor)
+        res = 0
+        while divisor <= dividend:
+            residual = divisor
+            multiple = 1
+            while (residual + residual) <= dividend:
+                residual += residual
+                multiple += multiple
+            dividend = dividend - residual
+            res += multiple            
+        if not positive:
+            res = -res
+        return min(max(-2147483648, res), 2147483647)
+```
+148.Sort List
+
+Sort a linked list in O(n log n) time using constant space complexity.
+
+**Thoughts: Merge sort**
+
+```
+class Solution(object):
+    def sortList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        if not head or not head.next: return head
+        pre, slow, fast = None, head, head
+        while fast and fast.next:
+            pre = slow
+            slow, fast = slow.next, fast.next.next
+        pre.next = None
+        l = self.sortList(head)
+        r = self.sortList(slow)
+        return self.merge(l, r)
+    
+    def merge(self, l, r):
+        dummy = ListNode(0)
+        p = dummy
+        while l and r:
+            if l.val > r.val:
+                p.next = r
+                r = r.next
+                p = p.next        
+            else:
+                p.next = l
+                l = l.next
+                p = p.next
+        if l:
+            p.next = l
+        if r:
+            p.next = r
+        return dummy.next
+```
