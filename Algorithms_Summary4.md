@@ -656,3 +656,48 @@ class Solution(object):
             p.next = r
         return dummy.next
 ```
+
+143.Reorder List
+
+Given a singly linked list L: L0→L1→…→Ln-1→Ln,
+
+reorder it to: L0→Ln→L1→Ln-1→L2→Ln-2→…
+
+You may not modify the values in the list's nodes, only nodes itself may be changed.
+
+**Thoughts:**
+
+```
+class Solution(object):
+    def reorderList(self, head):
+        """
+        :type head: ListNode
+        :rtype: void Do not return anything, modify head in-place instead.
+        """
+        if not head or not head.next: return 
+        pre, fast, slow = None, head, head
+        while fast and fast.next:
+            pre = slow
+            fast, slow = fast.next.next, slow.next
+        pre.next = None
+        head1 = self.reverse(slow)
+        cur = head
+        pre = None
+        while cur and head1:
+            nextn = cur.next
+            cur.next = head1
+            head1 = head1.next
+            cur.next.next = nextn
+            pre = cur.next
+            cur = nextn
+        if head1:
+            pre.next = head1        
+    def reverse(self, head):
+        prev = None
+        while head:
+            curr = head
+            head = head.next
+            curr.next = prev
+            prev = curr
+        return prev
+```
