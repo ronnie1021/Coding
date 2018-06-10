@@ -129,3 +129,147 @@ class Solution(object):
             n /= 2
         return res*x
 ```
+
+96. Unique Binary Search Trees
+
+Given n, how many structurally unique BST's (binary search trees) that store values 1 ... n?
+
+**Thoughts: f(n) = f(0)*f(n-1)........f(n-1)*f(0)**
+
+```
+class Solution(object):
+    def numTrees(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        nums = [0]* (n+1)
+        nums[0] = nums[1] = 1
+        for i in range(2, n+1):
+            for j in range(0, i):
+                nums[i] += nums[j]*nums[i-j-1]
+        return nums[n]
+```
+
+31.Next Permutation
+
+Implement next permutation, which rearranges numbers into the lexicographically next greater permutation of numbers.
+
+If such arrangement is not possible, it must rearrange it as the lowest possible order (ie, sorted in ascending order).
+
+The replacement must be in-place and use only constant extra memory.
+
+Here are some examples. Inputs are in the left-hand column and its corresponding outputs are in the right-hand column.
+
+**Thoughts: go through from end, find first small. then going from small to end, find value that least greater than small.
+then swap, and sort array from small to end**
+```
+class Solution(object):
+    def nextPermutation(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: void Do not return anything, modify nums in-place instead.
+        """
+        if not nums or len(nums) == 1:
+            return
+        small = -1
+        for i in reversed(range(len(nums)-1)):
+            if nums[i] < nums[i+1]:
+                small = i
+                break
+        if small == -1: nums[:] = nums[::-1]
+        large = -1
+        mind = float('inf')
+        for i in reversed(range(small+1, len(nums))):
+            if nums[i] > nums[small] and nums[i] - nums[small] < mind:
+                mind = nums[i] - nums[small]
+                large = i
+        nums[small], nums[large] = nums[large], nums[small]
+        nums[small+1:] = sorted(nums[small+1:])  
+```
+
+
+
+
+
+
+120.Triangle
+
+Given a triangle, find the minimum path sum from top to bottom. Each step you may move to adjacent numbers on the row below.
+
+For example, given the following triangle
+
+[
+     [2],
+    [3,4],
+   [6,5,7],
+  [4,1,8,3]
+]
+
+```
+class Solution(object):
+    def minimumTotal(self, triangle):
+        """
+        :type triangle: List[List[int]]
+        :rtype: int
+        """
+        if not triangle:
+            return 0
+        if len(triangle) == 1:
+            return triangle[0][0]
+        for i in reversed(range(0, len(triangle)-1)):
+            for j in range(i+1):
+                triangle[i][j] = min(triangle[i][j] + triangle[i+1][j], triangle[i][j] + triangle[i+1][j+1])
+        return triangle[0][0]
+```
+
+
+105.Construct Binary Tree from Preorder and Inorder Traversal
+
+Given preorder and inorder traversal of a tree, construct the binary tree.
+
+Note:
+You may assume that duplicates do not exist in the tree.
+
+For example, given
+
+preorder = [3,9,20,15,7]
+inorder = [9,3,15,20,7]
+
+```
+```
+
+116. Populating Next Right Pointers in Each Node
+
+```
+# Definition for binary tree with next pointer.
+# class TreeLinkNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+#         self.next = None
+
+class Solution:
+    # @param root, a tree link node
+    # @return nothing
+    def connect(self, root):
+        def connectNodes(n1, n2):
+            n1.next = n2
+            if n1.left:
+                connectNodes(n1.left, n1.right)
+                connectNodes(n2.left, n2.right)
+                connectNodes(n1.right, n2.left)
+        if not root or not root.left:
+            return         
+        connectNodes(root.left, root.right)
+        
+```
+
+
+114. Flatten Binary Tree to Linked List
+
+**Thoughts: Post order solution**
+
+```
+```
