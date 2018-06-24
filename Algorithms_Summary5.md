@@ -272,4 +272,101 @@ class Solution:
 **Thoughts: Post order solution**
 
 ```
+class Solution(object):
+    def __init__(self):
+        self.prev = None
+    def flatten(self, root):
+        """
+        :type root: TreeNode
+        :rtype: void Do not return anything, modify root in-place instead.
+        """
+        if not root: return 
+        self.flatten(root.right)
+        self.flatten(root.left)
+        root.left = None
+        root.right = self.prev
+        self.prev = root
+
+```
+
+
+377.Combination Sum IV
+
+Given an integer array with all positive numbers and no duplicates, find the number of possible combinations that add up to a positive integer target.
+
+Example:
+
+nums = [1, 2, 3]
+target = 4
+
+The possible combination ways are:
+(1, 1, 1, 1)
+(1, 1, 2)
+(1, 2, 1)
+(1, 3)
+(2, 1, 1)
+(2, 2)
+(3, 1)
+
+Note that different sequences are counted as different combinations.
+
+Therefore the output is 7.
+
+```
+class Solution(object):
+    def combinationSum4(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: int
+        """
+        self.count = 0
+        self.memo = {}
+        def dfs(nums, target):
+            if target in self.memo:
+                return self.memo[target]
+            if target == 0:
+                return 1
+            if target < 0:
+                return 0
+            sums = 0
+            for i in range(len(nums)):
+                sums += dfs(nums, target - nums[i])
+            self.memo[target] = sums
+            return sums
+        return dfs(nums, target)
+```
+
+698.Partition to K Equal Sum Subsets
+
+Given an array of integers nums and a positive integer k, find whether it's possible to divide this array into k non-empty 
+
+subsets whose sums are all equal.
+
+
+```
+class Solution(object):
+    def canPartitionKSubsets(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: bool
+        """
+        if sum(nums) % k: return False
+        target = sum(nums) / k
+        buckets = [0]*k
+        nums.sort()
+        index = len(nums) - 1
+        
+        def dfs(nums, target, buckets, index):
+            if index < 0:
+                return True
+            for i in range(len(buckets)):
+                if buckets[i] + nums[index] <= target:
+                    buckets[i] += nums[index]
+                    if dfs(nums, target, buckets, index-1): return True
+                    buckets[i] -= nums[index]
+                if not buckets[i]: break
+            return False
+        return dfs(nums, target, buckets, index)
 ```
