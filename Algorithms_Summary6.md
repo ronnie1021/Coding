@@ -202,3 +202,28 @@ class Solution(object):
         return self.next
     
 ```
+311.Sparse Matrix Multiplication
+
+Given two sparse matrices A and B, return the result of AB.
+
+You may assume that A's column number is equal to B's row number.
+
+```
+class Solution(object):
+    def multiply(self, A, B):
+        """
+        :type A: List[List[int]]
+        :type B: List[List[int]]
+        :rtype: List[List[int]]
+        """
+        m1, m2 = len(A), len(A[0])
+        n1, n2 = len(B), len(B[0])
+        result = [n2*[0] for i in range(m1)]
+        for i in range(m1):
+            for j in range(m2):
+                if A[i][j]:
+                    for t in range(n2):
+                        if B[j][t]:
+                            result[i][t] += A[i][j]*B[j][t]
+        return result                
+```
