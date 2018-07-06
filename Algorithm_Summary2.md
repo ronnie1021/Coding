@@ -524,51 +524,30 @@ class Solution(object):
                 
 ```
 
-24.Swap Nodes in Pairs
 
-Given 1->2->3->4, you should return the list as 2->1->4->3.
+739.Daily Temperatures
 
-```
-class Solution(object):
-    def swapPairs(self, head):
-        """
-        :type head: ListNode
-        :rtype: ListNode
-        """
-        pre, pre.next = self, head
-        while pre.next and pre.next.next:
-            a = pre.next
-            b = a.next
-            pre.next, b.next, a.next= b, a, b.next
-            pre = a
-        return self.next
-    
-```
+Given a list of daily temperatures, produce a list that, for each day in the input, tells you how many days you would have to
 
-43.Multiply Strings
+wait until a warmer temperature. If there is no future day for which this is possible, put 0 instead.
 
-Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2, also represented as a string.
+For example, given the list temperatures = [73, 74, 75, 71, 69, 72, 76, 73], your output should be [1, 1, 4, 2, 1, 1, 0, 0].
 
 ```
 class Solution(object):
-    def multiply(self, num1, num2):
+    def dailyTemperatures(self, temperatures):
         """
-        :type num1: str
-        :type num2: str
-        :rtype: str
+        :type temperatures: List[int]
+        :rtype: List[int]
         """
-        l1, l2 = len(num1), len(num2)
-        result = [0]*(l1+l2)
-        for i in reversed(range(l1)):
-            for j in reversed(range(l2)):
-                index1 = i + j
-                index2 = i + j + 1
-                mp = int(num1[i]) * int(num2[j])
-                sums = mp + result[index2]
-                result[index2] += (sums % 10)
-                result[index1] += (sums // 10)
-        return str(int(''.join(map(str, result))))
-                
+        T = temperatures 
+        ans = [0] * len(T)
+        stack = []
+        for i, t in enumerate(T):
+            while stack and stack[-1][1] < t:
+                index, _ = stack.pop()
+                ans[index] = i - index
+            stack.append((i, t))
+        return ans
 ```
-
 
