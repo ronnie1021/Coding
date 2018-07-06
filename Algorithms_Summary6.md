@@ -43,3 +43,154 @@ class Solution(object):
             start += 1
         return cur
 ```
+
+
+117.Populating Next Right Pointers in Each Node II
+
+```
+# Definition for binary tree with next pointer.
+# class TreeLinkNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+#         self.next = None
+
+class Solution:
+    # @param root, a tree link node
+    # @return nothing
+    def connect(self, node):
+        tail = dummy = TreeLinkNode(0)
+        while node:
+            tail.next = node.left
+            if tail.next:
+                tail = tail.next
+            tail.next = node.right
+            if tail.next:
+                tail = tail.next
+            node = node.next
+            if not node:
+                tail = dummy
+                node = dummy.next
+```
+299.Bulls and cows
+
+Example 1:
+
+Input: secret = "1807", guess = "7810"
+
+Output: "1A3B"
+
+Explanation: 1 bull and 3 cows. The bull is 8, the cows are 0, 1 and 7.
+
+```
+class Solution(object):
+    def getHint(self, secret, guess):
+        """
+        :type secret: str
+        :type guess: str
+        :rtype: str
+        """
+        index = A = 0
+        bulls = []
+        while index < len(secret):
+            if secret[index] == guess[index]:
+                A += 1
+            index += 1
+        total = sum([min(secret.count(x), guess.count(x)) for x in set(secret)]) 
+            
+            
+        return str(A)+'A'+str(total-A)+'B'
+                
+```
+
+156.Binary Tree Upside Down
+
+Given a binary tree where all the right nodes are either leaf nodes with a sibling (a left node that shares the same parent node) or empty, flip it upside down and turn it into a tree where the original right nodes turned into left leaf nodes. Return the new root.
+
+Example:
+
+Input: [1,2,3,4,5]
+
+    1
+   / \
+  2   3
+ / \
+4   5
+
+Output: return the root of the binary tree [4,5,2,#,#,3,1]
+
+   4
+  / \
+ 5   2
+    / \
+   3   1  
+
+```
+class Solution(object):
+    def upsideDownBinaryTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: TreeNode
+        """
+        
+        def dfs(root):
+            if not root or (not root.left and not root.right): return root
+            newroot = dfs(root.left)
+            root.left.left = root.right
+            root.left.right = root
+            root.left = None
+            root.right = None
+            return newroot
+        
+        return dfs(root)
+```
+
+
+
+43.Multiply Strings
+
+Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2, also represented as a string.
+
+```
+class Solution(object):
+    def multiply(self, num1, num2):
+        """
+        :type num1: str
+        :type num2: str
+        :rtype: str
+        """
+        l1, l2 = len(num1), len(num2)
+        result = [0]*(l1+l2)
+        for i in reversed(range(l1)):
+            for j in reversed(range(l2)):
+                index1 = i + j
+                index2 = i + j + 1
+                mp = int(num1[i]) * int(num2[j])
+                sums = mp + result[index2]
+                result[index2] += (sums % 10)
+                result[index1] += (sums // 10)
+        return str(int(''.join(map(str, result))))
+                
+```
+
+24.Swap Nodes in Pairs
+
+Given 1->2->3->4, you should return the list as 2->1->4->3.
+
+```
+class Solution(object):
+    def swapPairs(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        pre, pre.next = self, head
+        while pre.next and pre.next.next:
+            a = pre.next
+            b = a.next
+            pre.next, b.next, a.next= b, a, b.next
+            pre = a
+        return self.next
+    
+```
