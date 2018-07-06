@@ -470,3 +470,105 @@ class Solution(object):
                     maxv = max(maxv, rowcount + colcount[j])
         return maxv
 ```
+
+238.Product of Array Except Self
+Given an array nums of n integers where n > 1,  return an array output such that output[i] is equal to the product of all the elements of nums except nums[i].
+
+```
+class Solution(object):
+    def productExceptSelf(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        output = [1]
+        for n in nums[:-1]:
+            output += [output[-1]*n]
+        k = 1
+        for i in reversed(range(len(output))):
+            output[i] = output[i]*k
+            k = nums[i]*k
+        return output
+            
+```
+
+153.Find Minimum in Rotated Sorted Array
+
+Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
+
+(i.e.,  [0,1,2,4,5,6,7] might become  [4,5,6,7,0,1,2]).
+
+Find the minimum element.
+
+You may assume no duplicate exists in the array.
+
+```
+class Solution(object):
+    def findMin(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        start = 0
+        end = len(nums) - 1 
+        while start +1 < end:
+            mid = (start + end) / 2
+            if nums[end] > nums[start]:
+                return nums[start]
+            if nums[mid] > nums[start] and nums[mid] > nums[end]:
+                start = mid
+            elif nums[mid] < nums[start] and nums[mid] < nums[end]:
+                end = mid
+                
+        return nums[start] if nums[start] < nums[end] else nums[end]
+                
+```
+
+24.Swap Nodes in Pairs
+
+Given 1->2->3->4, you should return the list as 2->1->4->3.
+
+```
+class Solution(object):
+    def swapPairs(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        pre, pre.next = self, head
+        while pre.next and pre.next.next:
+            a = pre.next
+            b = a.next
+            pre.next, b.next, a.next= b, a, b.next
+            pre = a
+        return self.next
+    
+```
+
+43.Multiply Strings
+
+Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2, also represented as a string.
+
+```
+class Solution(object):
+    def multiply(self, num1, num2):
+        """
+        :type num1: str
+        :type num2: str
+        :rtype: str
+        """
+        l1, l2 = len(num1), len(num2)
+        result = [0]*(l1+l2)
+        for i in reversed(range(l1)):
+            for j in reversed(range(l2)):
+                index1 = i + j
+                index2 = i + j + 1
+                mp = int(num1[i]) * int(num2[j])
+                sums = mp + result[index2]
+                result[index2] += (sums % 10)
+                result[index1] += (sums // 10)
+        return str(int(''.join(map(str, result))))
+                
+```
+
+
